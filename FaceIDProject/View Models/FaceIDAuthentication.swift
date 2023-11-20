@@ -27,6 +27,13 @@ class FaceIDAuthentication: ObservableObject {
         }
     }
     
+    // Unlock if the authentication is a success
+    func lock() {
+        DispatchQueue.main.async {
+            self.isUnlocked = false
+        }
+    }
+    
     // Launch the authentication
     func launchAuthentication(reason: String) async throws {
         do {
@@ -39,12 +46,16 @@ class FaceIDAuthentication: ObservableObject {
     
     // Try to authenticate
     func authenticate(reason: String) {
-        DispatchQueue.main.async {
-            Task {
-                if self.isBiometricAuthenticationPossible {
-                    try await self.launchAuthentication(reason: reason)
-                } else {
-                    // no biometrics
+        if isUnlocked {
+            lock()
+        } else {
+            DispatchQueue.main.async {
+                Task {
+                    if self.isBiometricAuthenticationPossible {
+                        try await self.launchAuthentication(reason: reason)
+                    } else {
+                        // no biometrics
+                    }
                 }
             }
         }

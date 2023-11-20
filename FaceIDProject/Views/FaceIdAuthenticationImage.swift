@@ -8,11 +8,18 @@
 import SwiftUI
 
 struct FaceIdAuthenticationImage: View {
+    @ObservedObject var faceIDAuth: FaceIDAuthentication
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        Circle()
+            .stroke(lineWidth: 5)
+            .frame(width: 135, height: 135)
+            .foregroundStyle(faceIDAuth.isUnlocked ? .green : .red)
+            .overlay(
+                Image(faceIDAuth.isUnlocked ? "chestOpen" : "chestClose")
+            )
     }
 }
 
 #Preview {
-    FaceIdAuthenticationImage()
+    FaceIdAuthenticationImage(faceIDAuth: FaceIDAuthentication())
 }
